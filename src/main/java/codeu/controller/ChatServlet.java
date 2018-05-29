@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 
 /** Servlet class responsible for the chat page. */
@@ -140,8 +141,17 @@ public class ChatServlet extends HttpServlet {
 
     String messageContent = request.getParameter("message");
 
-    // this removes any illegal HTML from the message content
-    String cleanedMessageContent = Jsoup.clean(messageContent, Whitelist.basic());
+    // This removes any illegal HTML from the message content,
+    // and the whitelist allows a fuller range of text nodes: a, b, blockquote, br, cite, code, dd, dl, dt,
+    // em, i, li, ol, p, pre, q, small, span, strike, strong, sub, sup, u, ul, and appropriate attributes.
+    // Links (a elements) can point to http, https, ftp, mailto, and have an enforced rel=nofollow attribute.
+    // Does not allow images.
+    // Spaces and line breaks are preserved
+    String cleanedMessageContent = Jsoup.clean(
+            messageContent,
+            "",
+            Whitelist.basic(),
+            new Document.OutputSettings().prettyPrint(false));
 
     Message message =
         new Message(
