@@ -2,13 +2,15 @@
 <%@ page import="codeu.model.data.Conversation" %>
 <%@ page import="codeu.model.data.Message" %>
 <%@ page import="codeu.model.store.basic.UserStore" %>
-<%@ page import="java.time.LocalDateTime" %>
-<%@ page import="java.time.ZoneId" %>
+
 
 
 <%
 List<Message> messages = (List<Message>) request.getAttribute("messages");
 List<Conversation> conversations = (List<Conversation>) request.getAttribute("conversations");
+List<String> feeds = (List<String>) request.getAttribute("feeds");
+List<String> convo2Feed = (List<String>) request.getAttribute("convo2Feed");
+List<String> user2Feed = (List<String>) request.getAttribute("user2Feed");
 %>
 
 <!DOCTYPE html>
@@ -27,7 +29,7 @@ List<Conversation> conversations = (List<Conversation>) request.getAttribute("co
       <a href="/login">Login</a>
     <% } %>
     <a href="/about.jsp">About</a>
-    <a href="/activity"> Activity Feed </a>
+    <a href="/activity">Activity Feed</a>
   </nav>
 
   <div id="container">
@@ -45,22 +47,41 @@ List<Conversation> conversations = (List<Conversation>) request.getAttribute("co
       } else {
       %>
 
-      <ul>
-    <%
+  <%--  <%
     for (Message message : messages) {
       String author = UserStore.getInstance().getUser(message.getAuthorId()).getName();
       //String convo = UserStore.getInstance().getUser(message.getConversationId()).getTitle(); //beyond mvp
       LocalDateTime ldt = LocalDateTime.ofInstant(message.getCreationTime(), ZoneId.systemDefault()); //from oracle docs
       %> <li>
       <%= ldt.getMonth()%>, <%= ldt.getDayOfMonth()%> <%= ldt.getYear()%>
-       <%= ldt.getHour()%>:<%= ldt.getMinute()%> in chat: <%-- <%= convo %> --%>
+       <%= ldt.getHour()%>:<%= ldt.getMinute()%> in chat:
       <strong><%= author %>:</strong> <%= message.getContent() %>
       </li>
       <% } %>
+    --%>
+    <p> Messages sent: </p> <ul>
+    <%
+    for (String item: feeds) { %>
+        <li> <%= item %> </li>
+    <% }  %>
+    </ul>
+
+    <p> Conversations feed: </p> <ul>
+    <%  for (String convos: convo2Feed) { %>
+
+      <li> <%= convos %> </li>
+    <% } %>
+    </ul>
+
+    <p> Users feed: </p> <ul>
+    <% for (String user: user2Feed) { %>
+        <li><%= user %> </li>
+    <% } %>
     </ul>
     <%
     }
     %>
+
   </div>
   </div>
 </body>
