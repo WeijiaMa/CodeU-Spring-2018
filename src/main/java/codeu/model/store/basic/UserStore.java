@@ -63,7 +63,10 @@ public class UserStore {
     this.persistentStorageAgent = persistentStorageAgent;
     users = new ArrayList<>();
   }
-
+  /** Access the current set of messages known to the application */
+  public List<User> getAllUsers() {
+    return users;
+  }
   /**
    * Access the User object with the given name.
    *
@@ -127,4 +130,3 @@ public class UserStore {
     this.users = users;
   }
 }
-

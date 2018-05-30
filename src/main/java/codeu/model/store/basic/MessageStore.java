@@ -64,7 +64,10 @@ public class MessageStore {
     this.persistentStorageAgent = persistentStorageAgent;
     messages = new ArrayList<>();
   }
-
+  /** Access the current set of messages known to the application. */
+    public List<Message> getAllMessages() {
+      return messages;
+    }
   /** Add a new message to the current set of messages known to the application. */
   public void addMessage(Message message) {
     messages.add(message);
