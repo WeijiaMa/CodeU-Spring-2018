@@ -39,7 +39,9 @@ public class ProfileServlet extends HttpServlet {
     }
 
     /**
-     * Currently does nothing. Will update for MVP version of profile.
+     * Currently does nothing. TODO: <MVP will utilize this when the user submits their bio through
+     * text box, and the information will be stored in the model/store/basic directory so their bio
+     * can appear on their profile page.>
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {

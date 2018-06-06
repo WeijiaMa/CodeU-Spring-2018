@@ -58,8 +58,12 @@ public class UserStore {
   /** The in-memory list of Users. */
   private List<User> users;
 
+    /**
+     * Access a list of all the users registered in the program.
+     * @return a list of registered users
+     */
   public List<User> getAllUsers() {
-        return users;
+    return users;
     }
 
   /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
