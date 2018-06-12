@@ -18,20 +18,20 @@
   </nav>
 
   <div id="container">
-    <h1>Profile Page</h1>
-
+    <h1><%= request.getAttribute("user") %>s profile page</h1>
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
-
     <%
         if(request.getAttribute("user").equals(request.getSession().getAttribute("user"))){
     %>
-          <p>This is the <strong> your </strong> page: <%= request.getSession().getAttribute("user") %>!</p>
+          <p>Update your bio:</p>
+          <form action="profile.jsp" method="POST">
+            <textarea name="paragraph_text" cols="85" rows="8"></textarea>
+          </index></form>
         <% }
-
         else{ %>
-          <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
+          <p>About <%= request.getAttribute("user") %>:</p>
         <% } %>
 
   </div>

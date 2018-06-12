@@ -76,5 +76,4 @@
     <url-pattern>/users/*</url-pattern>
   </servlet-mapping>
 
-
 </web-app>
