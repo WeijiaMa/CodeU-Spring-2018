@@ -5,16 +5,21 @@ import javax.servlet.http.HttpServlet;
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
 import codeu.model.store.basic.UserStore;
+
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.mindrot.jbcrypt.BCrypt;
 
-/** Servlet class responsible for the login page.
- * @author: Konce Quispe */
+/**
+ * Servlet class responsible for the login page.
+ *
+ * @author: Konce Quispe
+ */
 public class ProfileServlet extends HttpServlet {
 
     /**
@@ -39,12 +44,17 @@ public class ProfileServlet extends HttpServlet {
     }
 
     /**
-     * Currently does nothing. TODO: <MVP will utilize this when the user submits their bio through
-     * text box, and the information will be stored in the model/store/basic directory so their bio
-     * can appear on their profile page.>
+     * Gets the username from the session and finds the corresponding user in the UserStore.
+     * Accesses the current bio for this user and updates it with the information from the submission
+     * form. Updates the user and redirects back to the user's profile page.
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        response.sendRedirect("/users");
+        String username = (String) request.getSession().getAttribute("user");
+        User user = UserStore.getInstance().getUser(username);
+        String bio = request.getParameter("bio");
+        user.setBio(bio);
+        UserStore.getInstance().updateUser(user);
+        response.sendRedirect("/users/" + username);
     }
 }

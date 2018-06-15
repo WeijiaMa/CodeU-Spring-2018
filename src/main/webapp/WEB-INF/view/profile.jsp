@@ -1,3 +1,6 @@
+<%@ page import="codeu.model.data.User" %>
+<%@ page import="codeu.model.store.basic.UserStore" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +12,9 @@
   <nav>
     <a id="navTitle" href="/">CodeU Chat App</a>
     <a href="/conversations">Conversations</a>
-    <% if(request.getSession().getAttribute("user") != null){ %>
-      <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+    <%
+      if(request.getSession().getAttribute("user") != null){ %>
+      <a href="/allusers">All Users</a>
     <% } else{ %>
       <a href="/login">Login</a>
     <% } %>
@@ -18,21 +22,44 @@
   </nav>
 
   <div id="container">
-    <h1>Profile Page</h1>
-
+    <h1><%= request.getAttribute("user") %>'s Profile Page</h1>
     <% if(request.getAttribute("error") != null){ %>
         <h2 style="color:red"><%= request.getAttribute("error") %></h2>
     <% } %>
-
     <%
-        if(request.getAttribute("user").equals(request.getSession().getAttribute("user"))){
+        String username = (String) request.getSession().getAttribute("user");
+        User user = UserStore.getInstance().getUser(username);
+        String bio = request.getParameter("bio");
+        if(request.getAttribute("user").equals(username)){
     %>
-          <p>This is the <strong> your </strong> page: <%= request.getSession().getAttribute("user") %>!</p>
+          <h3>About <%= username %>:</h3>
+          <%
+          if(bio != null) { %>
+            <p><%= bio %></p>
+          <% }
+          else{ %>
+            <p>You have not added a bio.</p> <%
+              } %>
+          <br/>
+          <form method="POST">
+                <label for="bio">Update your bio: </label>
+                <br/>
+                <input type="text" name="bio" id="bio">
+                <br/>
+                <button type="submit">Submit</button>
+          </form>
         <% }
-
         else{ %>
-          <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
-        <% } %>
+          <h3>About <%= request.getAttribute("user") %>:</h3>
+          <%
+          if(bio != null) { %>
+            <p><%= bio %></p> <%
+         }
+         else{
+         %> <p>User has not added a bio.</p> <%
+         }
+       }
+       %>
 
   </div>
 </body>
