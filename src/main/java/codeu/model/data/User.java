@@ -23,7 +23,7 @@ public class User {
   private final String name;
   private final String passwordHash;
   private final Instant creation;
-  private final String bio;
+  private String bio;
 
   /**
    * Constructs a new User.
@@ -32,6 +32,7 @@ public class User {
    * @param name the username of this User
    * @param passwordHash the password hash of this User
    * @param creation the creation time of this User
+   * @param bio the bio of this User
    */
   public User(UUID id, String name, String passwordHash, Instant creation, String bio) {
     this.id = id;
@@ -62,4 +63,6 @@ public class User {
   }
 
   public String getBio(){ return bio; }
+
+  public void setBio(String bio){this.bio = bio;}
 }
