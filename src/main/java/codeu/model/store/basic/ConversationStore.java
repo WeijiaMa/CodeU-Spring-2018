@@ -15,6 +15,7 @@
 package codeu.model.store.basic;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.User;
 import codeu.model.store.persistence.PersistentStorageAgent;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,19 @@ public class ConversationStore {
 /** Access the current set of conversations known to the application. */
   public List<Conversation> getAllConversations() {
     return conversations;
+  }
+
+  /** Access the current set of conversations known to the user. */
+  public List<Conversation> getAvailableConversations(User user) {
+    List<Conversation> availableConversations = new ArrayList<>();
+    for (Conversation conversation : conversations){
+      if (conversation.isPrivate()){
+        availableConversations.add(conversation);
+      } else if (user != null && conversation.hasParticipant(user.getId())){
+        availableConversations.add(conversation);
+      }
+    }
+    return availableConversations;
   }
 
   /** Add a new conversation to the current set of conversations known to the application. */
