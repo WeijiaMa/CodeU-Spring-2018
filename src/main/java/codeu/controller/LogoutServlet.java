@@ -43,12 +43,8 @@ public class LogoutServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-        //User user = userStore.getUser(username);
         request.getSession().setAttribute("user", null);
         request.getSession().setAttribute("username", null);
-
-
         response.sendRedirect("/");
-
   }
 }

@@ -20,7 +20,8 @@
       <% } %>
   </nav>
 
-  <div id = "container">
+
+    <div id="container">
     <h1>Logout</h1>
 
     <% if(request.getSession().getAttribute("user") == null) {%>
@@ -30,5 +31,8 @@
     <form action ="/logout" method = "POST">
       <button type="submit">Yes</button>
     </form>
-    <p>no</p>
+
+    <a href ="/">
+    <button>No</button> </a>
+  </div>
     <% } %>
