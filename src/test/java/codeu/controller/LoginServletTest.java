@@ -49,7 +49,6 @@ public class LoginServletTest {
   @Test
   public void testDoGet() throws IOException, ServletException {
     loginServlet.doGet(mockRequest, mockResponse);
-
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
 

@@ -4,16 +4,14 @@ import javax.servlet.http.HttpServlet;
 
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
+import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
-
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Servlet class responsible for the login page.
@@ -37,6 +35,8 @@ public class ProfileServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+        String username = (String)request.getSession().getAttribute("user");
+        request.setAttribute("username", username);
         String requestUrl = request.getRequestURI();
         String user = requestUrl.substring("/users/".length());
         request.setAttribute("user", user);
@@ -52,8 +52,8 @@ public class ProfileServlet extends HttpServlet {
             throws IOException, ServletException {
         String username = (String) request.getSession().getAttribute("user");
         User user = UserStore.getInstance().getUser(username);
-        String bio = request.getParameter("bio");
-        user.setBio(bio);
+        String newBio = request.getParameter("bio");
+        user.setBio(newBio);
         UserStore.getInstance().updateUser(user);
         response.sendRedirect("/users/" + username);
     }

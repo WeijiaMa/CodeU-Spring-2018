@@ -44,25 +44,29 @@ public class User {
 
   /** Returns the ID of this User. */
   public UUID getId() {
-    return id;
+      return id;
   }
 
   /** Returns the username of this User. */
   public String getName() {
-    return name;
+      return name;
   }
-  
+
   /** Returns the password hash of this User. */
   public String getPasswordHash() {
-    return passwordHash;
+      return passwordHash;
   }
 
   /** Returns the creation time of this User. */
   public Instant getCreationTime() {
-    return creation;
+      return creation;
   }
 
-  public String getBio(){ return bio; }
+  public String getBio(){
+      return bio;
+  }
 
-  public void setBio(String bio){this.bio = bio;}
+  public void setBio(String bio){
+      this.bio = bio;
+  }
 }

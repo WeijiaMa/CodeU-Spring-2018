@@ -2,7 +2,6 @@ package codeu.controller;
 
 import codeu.model.data.User;
 import codeu.model.store.basic.UserStore;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +39,8 @@ public class UserServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         List<User> users = userStore.getAllUsers();
+        String username = (String)request.getSession().getAttribute("user");
+        request.setAttribute("username", username);
         request.setAttribute("users", users);
         request.getRequestDispatcher("/WEB-INF/view/allusers.jsp").forward(request, response);
     }
