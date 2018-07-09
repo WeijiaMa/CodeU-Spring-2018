@@ -74,9 +74,11 @@ public class ConversationStore {
   public List<Conversation> getAvailableConversations(User user) {
     List<Conversation> availableConversations = new ArrayList<>();
     for (Conversation conversation : conversations){
-      if (conversation.isPrivate()){
+      if (!conversation.isPrivate()){
+        // the conversation is public
         availableConversations.add(conversation);
       } else if (user != null && conversation.hasParticipant(user.getId())){
+        // the user is in the participant list of this private conversation
         availableConversations.add(conversation);
       }
     }

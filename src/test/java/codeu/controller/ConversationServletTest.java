@@ -65,9 +65,8 @@ public class ConversationServletTest {
     conversationServlet.setUserStore(mockUserStore);
   }
 
-
   @Test
-  public void testDoGet() throws IOException, ServletException {
+  public void testDoGet_privateAndPublicConversations() throws IOException, ServletException {
     Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
 
     User fakeUser =
@@ -82,13 +81,12 @@ public class ConversationServletTest {
     Mockito.when(mockConversationStore.isTitleTaken("test_conversation_public")).thenReturn(false);
 
     List<Conversation> fakeConversationList = new ArrayList<>();
-    List<UUID> test_participants = new ArrayList<>();
-    test_participants.add(fakeUser.getId());
+    List<UUID> testParticipants = new ArrayList<>();
+    testParticipants.add(fakeUser.getId());
     fakeConversationList.add(
-            new Conversation(UUID.randomUUID(), fakeUser.getId(), "test_conversation_private", Instant.now(), true, test_participants));
+            new Conversation(UUID.randomUUID(), fakeUser.getId(), "test_conversation_private", Instant.now(), true, testParticipants));
     fakeConversationList.add(
             new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation_public", Instant.now(), false, null));
-
     Mockito.when(mockConversationStore.getAvailableConversations(fakeUser)).thenReturn(fakeConversationList);
 
     conversationServlet.doGet(mockRequest, mockResponse);
@@ -96,7 +94,6 @@ public class ConversationServletTest {
     Mockito.verify(mockRequest).setAttribute("conversations", fakeConversationList);
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
-
 
 
   @Test

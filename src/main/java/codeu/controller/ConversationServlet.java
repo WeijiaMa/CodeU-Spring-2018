@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet class responsible for the conversations page. */
 public class ConversationServlet extends HttpServlet {
-
   /** Store class that gives access to Users. */
   private UserStore userStore;
 

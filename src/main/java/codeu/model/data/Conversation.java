@@ -82,6 +82,9 @@ public class Conversation {
 
   /** Returns true if the user is a participant of this private Conversation. */
   public boolean hasParticipant(UUID user) {
+    if (participants == null){
+      return false;
+    }
     for(UUID participant : participants){
       if (user.equals(participant)){
         return true;
