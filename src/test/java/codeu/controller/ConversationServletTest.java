@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -65,17 +66,35 @@ public class ConversationServletTest {
   }
 
   @Test
-  public void testDoGet() throws IOException, ServletException {
+  public void testDoGet_privateAndPublicConversations() throws IOException, ServletException {
+    Mockito.when(mockSession.getAttribute("user")).thenReturn("test_username");
+
+    User fakeUser =
+            new User(
+                    UUID.randomUUID(),
+                    "test_username",
+                    "$2a$10$eDhncK/4cNH2KE.Y51AWpeL8/5znNBQLuAFlyJpSYNODR/SJQ/Fg6",
+                    Instant.now());
+    Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+
+    Mockito.when(mockConversationStore.isTitleTaken("test_conversation_private")).thenReturn(false);
+    Mockito.when(mockConversationStore.isTitleTaken("test_conversation_public")).thenReturn(false);
+
     List<Conversation> fakeConversationList = new ArrayList<>();
+    List<UUID> testParticipants = new ArrayList<>();
+    testParticipants.add(fakeUser.getId());
     fakeConversationList.add(
-        new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation", Instant.now()));
-    Mockito.when(mockConversationStore.getAllConversations()).thenReturn(fakeConversationList);
+            new Conversation(UUID.randomUUID(), fakeUser.getId(), "test_conversation_private", Instant.now(), true, testParticipants));
+    fakeConversationList.add(
+            new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation_public", Instant.now(), false, null));
+    Mockito.when(mockConversationStore.getAvailableConversations(fakeUser)).thenReturn(fakeConversationList);
 
     conversationServlet.doGet(mockRequest, mockResponse);
 
     Mockito.verify(mockRequest).setAttribute("conversations", fakeConversationList);
     Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
   }
+
 
   @Test
   public void testDoPost_UserNotLoggedIn() throws IOException, ServletException {

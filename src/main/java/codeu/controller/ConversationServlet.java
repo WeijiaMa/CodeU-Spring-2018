@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet class responsible for the conversations page. */
 public class ConversationServlet extends HttpServlet {
-
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
@@ -116,7 +115,7 @@ public class ConversationServlet extends HttpServlet {
     }
 
     Conversation conversation =
-        new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now());
+        new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now(), false, null);
 
     conversationStore.addConversation(conversation);
     response.sendRedirect("/chat/" + conversationTitle);
