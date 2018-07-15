@@ -76,5 +76,14 @@
     <url-pattern>/users/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>codeu.controller.UserServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/allusers</url-pattern>
+  </servlet-mapping>
 
 </web-app>

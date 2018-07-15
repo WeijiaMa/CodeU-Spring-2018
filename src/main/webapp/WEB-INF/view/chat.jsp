@@ -49,11 +49,12 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
   <nav>
     <a id="navTitle" href="/">CodeU Chat App</a>
     <a href="/conversations">Conversations</a>
-      <% if (request.getSession().getAttribute("user") != null) { %>
-    <a>Hello <%= request.getSession().getAttribute("user") %>!</a>
+      <% if(request.getAttribute("username") != null){ %>
+            <a href="/users/<%=request.getAttribute("username")%>">Hello <%= request.getAttribute("username") %>!</a>
     <% } else { %>
       <a href="/login">Login</a>
     <% } %>
+    <a href="/allusers">All Users</a>
     <a href="/about.jsp">About</a>
   </nav>
 
