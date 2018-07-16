@@ -15,6 +15,7 @@
 package codeu.model.data;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +48,10 @@ public class Conversation {
     this.creation = creation;
     this.title = title;
     this.isPrivate = isPrivate;
+    if (participants == null) {
+      participants = new ArrayList<>();
+    }
+    participants.add(owner);
     this.participants = participants;
   }
 
@@ -81,7 +86,10 @@ public class Conversation {
   }
 
   /** Returns true if the user is a participant of this private Conversation. */
-  public boolean hasParticipant(UUID user) {
+  public boolean isAvailableTo(UUID user) {
+    if (user == null){
+      return false;
+    }
     if (participants == null){
       return false;
     }

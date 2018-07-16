@@ -28,6 +28,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class handles all interactions with Google App Engine's Datastore service. On startup it
@@ -35,7 +37,7 @@ import java.util.UUID;
  * also performs writes of new of modified objects back to the Datastore.
  */
 public class PersistentDataStore {
-
+  Logger logger = Logger.getLogger(PersistentDataStore.class.getName());
   // Handle to Google AppEngine's Datastore service.
   private DatastoreService datastore;
 
@@ -102,7 +104,12 @@ public class PersistentDataStore {
         String title = (String) entity.getProperty("title");
         Instant creationTime = Instant.parse((String) entity.getProperty("creation_time"));
         boolean isPrivate = (boolean) entity.getProperty("is_private");
-        List<UUID> participantsUuid = (List<UUID>) entity.getProperty("participants_uuid");
+        String participantsStr = (String)entity.getProperty("participants_uuid");
+        String[] participantsArr = participantsStr.split(",");
+        List<UUID> participantsUuid = new ArrayList<>();
+        for (int i = 0; i < participantsArr.length; i++){
+          participantsUuid.add(UUID.fromString(participantsArr[i]));
+        }
         Conversation conversation = new Conversation(uuid, ownerUuid, title, creationTime, isPrivate, participantsUuid);
         conversations.add(conversation);
       } catch (Exception e) {
@@ -180,7 +187,8 @@ public class PersistentDataStore {
     conversationEntity.setProperty("title", conversation.getTitle());
     conversationEntity.setProperty("creation_time", conversation.getCreationTime().toString());
     conversationEntity.setProperty("is_private", conversation.isPrivate());
-    conversationEntity.setProperty("participants_uuid", conversation.getParticipants());
+    conversationEntity.setProperty("participants_uuid",
+            conversation.getParticipants().stream().map(uuid -> uuid.toString()).collect(Collectors.joining(",")));
     datastore.put(conversationEntity);
   }
 }
