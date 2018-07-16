@@ -20,8 +20,10 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,11 +31,15 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet class responsible for the conversations page. */
 public class ConversationServlet extends HttpServlet {
+  Logger logger = Logger.getLogger(ConversationServlet.class.getName());
   /** Store class that gives access to Users. */
   private UserStore userStore;
 
   /** Store class that gives access to Conversations. */
   private ConversationStore conversationStore;
+
+  // In memory storage for current list of participants
+  private List<User> participants = new ArrayList<>();
 
   /**
    * Set up state for handling conversation-related requests. This method is only called when
@@ -84,7 +90,6 @@ public class ConversationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
-
     String username = (String) request.getSession().getAttribute("user");
     if (username == null) {
       // user is not logged in, don't let them create a conversation
@@ -100,6 +105,21 @@ public class ConversationServlet extends HttpServlet {
       return;
     }
 
+    String requestUrl = request.getRequestURI();
+    if ("/conversations".equals(requestUrl)){
+      handleCreateConversation(user, request, response);
+    } else if ("/conversations/private".equals(requestUrl)){
+      handlePostParticipant(request, response);
+    } else {
+      // unknown request url
+      response.sendRedirect("/conversations");
+    }
+  }
+
+  private void handleCreateConversation(User user, HttpServletRequest request, HttpServletResponse response)
+          throws IOException, ServletException {
+    logger.warning("convo" + request.toString());
+    // determine conversation title
     String conversationTitle = request.getParameter("conversationTitle");
     if (!conversationTitle.matches("[\\w*]*")) {
       request.setAttribute("error", "Please enter only letters and numbers.");
@@ -110,14 +130,68 @@ public class ConversationServlet extends HttpServlet {
     if (conversationStore.isTitleTaken(conversationTitle)) {
       // conversation title is already taken, just go into that conversation instead of creating a
       // new one
+      request.getSession().setAttribute("conversationTitle", "");
+      request.getSession().setAttribute("conversationType", "public");
       response.sendRedirect("/chat/" + conversationTitle);
       return;
     }
 
-    Conversation conversation =
-        new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now(), false, null);
+    // determine conversation type
+    String conversationType = request.getParameter("conversationType");
+    boolean isPrivate = conversationType != null && conversationType.equals("private");
+    // create participants list
+    List<UUID> participantUUIDs = new ArrayList<>();
+    if (isPrivate) {
+      for (User p : participants){
+        participantUUIDs.add(p.getId());
+      }
+    }
 
+    // create conversation
+    Conversation conversation =
+            new Conversation(UUID.randomUUID(), user.getId(), conversationTitle, Instant.now(), isPrivate, participantUUIDs);
     conversationStore.addConversation(conversation);
+
+    // Update title, type, participants to default
+    participants = new ArrayList<>();
+    request.getSession().setAttribute("conversationTitle", "");
+    request.getSession().setAttribute("conversationType", "public");
     response.sendRedirect("/chat/" + conversationTitle);
+  }
+
+  private void handlePostParticipant(HttpServletRequest request, HttpServletResponse response)
+          throws IOException, ServletException {
+    logger.warning("Parti");
+    // Update title and type
+    String conversationTitle = request.getParameter("conversationTitle");
+    request.getSession().setAttribute("conversationTitle", conversationTitle);
+
+    // determine participant posted
+    String participantName = request.getParameter("conversationParticipant");
+    if(participantName != null && !participantName.equals("")){
+      User participant = userStore.getUser(participantName);
+      if (participant == null){
+        request.setAttribute("error", participantName + " not found in the database");
+        request.removeAttribute("conversationParticipant");
+      } else if (duplicateParticipant(participant)) {
+        request.setAttribute("error", participantName + "is already added to the conversation");
+        request.removeAttribute("conversationParticipant");
+      } else {
+          participants.add(participant);
+          request.setAttribute("participants", participants);
+        }
+      }
+
+      request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
+      return;
+    }
+
+  private boolean duplicateParticipant(User participant) {
+    for (User p : participants) {
+      if (p.getId() == participant.getId()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

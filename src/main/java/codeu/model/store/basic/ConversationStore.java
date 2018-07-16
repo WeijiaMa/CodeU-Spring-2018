@@ -77,7 +77,7 @@ public class ConversationStore {
       if (!conversation.isPrivate()){
         // the conversation is public
         availableConversations.add(conversation);
-      } else if (user != null && conversation.hasParticipant(user.getId())){
+      } else if (user != null && conversation.isAvailableTo(user.getId())){
         // the user is in the participant list of this private conversation
         availableConversations.add(conversation);
       }
