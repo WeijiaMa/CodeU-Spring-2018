@@ -2,6 +2,7 @@ package codeu.controller;
 
 import codeu.model.data.Conversation;
 import codeu.model.store.basic.ConversationStore;
+import codeu.model.store.basic.UserStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,14 +23,22 @@ import static org.junit.Assert.*;
 public class ProfileServletTest {
 
     private ProfileServlet profileServlet;
+    private ConversationServlet conversationServlet;
     private HttpServletRequest mockRequest;
     private HttpSession mockSession;
     private HttpServletResponse mockResponse;
     private RequestDispatcher mockRequestDispatcher;
+    private ConversationStore mockConversationStore;
+    private UserStore mockUserStore;
 
     @Before
     public void setup() {
         profileServlet = new ProfileServlet();
+        conversationServlet = new ConversationServlet();
+        mockConversationStore = Mockito.mock(ConversationStore.class);
+        conversationServlet.setConversationStore(mockConversationStore);
+        mockUserStore = Mockito.mock(UserStore.class);
+        conversationServlet.setUserStore(mockUserStore);
         mockRequest = Mockito.mock(HttpServletRequest.class);
         mockSession = Mockito.mock(HttpSession.class);
         Mockito.when(mockRequest.getSession()).thenReturn(mockSession);

@@ -53,6 +53,10 @@
             </form>
         <h3>Your conversations:</h3>
     <% }
+
+
+
+
          else{ %>
              <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
              <h3>About <%= request.getAttribute("user") %>:</h3>
