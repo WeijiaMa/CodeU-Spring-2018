@@ -15,12 +15,15 @@
 --%>
 <%@ page import="java.util.List" %>
 <%@ page import="codeu.model.data.Conversation" %>
+<%@ page import="codeu.model.data.User" %>
 
 <!DOCTYPE html>
 <html>
 <head>
   <title>Conversations</title>
   <link rel="stylesheet" href="/css/main.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/conversations.js"></script>
 </head>
 <body>
 
@@ -45,9 +48,37 @@
     <% if(request.getAttribute("username") != null){ %>
       <h1>New Conversation</h1>
       <form action="/conversations" method="POST">
+        <div class="form-group">
+          <label class="form-control-label">Title:</label>
+          <input type="text" name="conversationTitle" id="conversationTitle">
+        </div>
+        <div class="form-group" id="typeRadio">
+          <label class="form-control-label">Type:</label>
+          <input type="radio" name="conversationType" value="public" id="typePublic" checked> Public
+          <input type="radio" name="conversationType" value="private"> Private
+        </div>
+        <div class="hidden" id="conversationParticipants">
           <div class="form-group">
-            <label class="form-control-label">Title:</label>
-          <input type="text" name="conversationTitle">
+            <label class="form-control-label">Participant:</label>
+            <input type="input" name="conversationParticipant" id="conversationParticipant">
+          </div>
+          <button id="postParticipantBtn" type="button">Add</button>
+
+          <%
+            List<User> participants =
+                (List<User>) request.getAttribute("participants");
+            if(participants != null){
+          %>
+          <ul class="mdl-list">
+            <%
+              for(User p : participants){
+            %>
+            <li>
+              <%= p.getName() %>
+            </li>
+            <% } %>
+          </ul>
+          <% } %>
         </div>
 
         <button type="submit">Create</button>
