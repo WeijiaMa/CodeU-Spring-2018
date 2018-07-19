@@ -1,6 +1,7 @@
 package codeu.controller;
 
 import codeu.model.data.Conversation;
+import codeu.model.data.User;
 import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import org.junit.Before;
@@ -50,11 +51,31 @@ public class ProfileServletTest {
 
     @Test
     public void testDoGet() throws IOException, ServletException {
+        /*
+        User fakeUser =
+                new User(
+                        UUID.randomUUID(),
+                        "test_username",
+                        "$2a$10$eDhncK/4cNH2KE.Y51AWpeL8/5znNBQLuAFlyJpSYNODR/SJQ/Fg6",
+                        Instant.now(), "");
+        Mockito.when(mockUserStore.getUser("test_username")).thenReturn(fakeUser);
+
         Mockito.when(mockRequest.getRequestURI()).thenReturn("/users/test_profile");
         profileServlet.doGet(mockRequest, mockResponse);
-        String fakeUser = mockRequest.getRequestURI().substring("/users/".length());
-        Mockito.verify(mockRequest).setAttribute("user", fakeUser);
+        String fakeUser2 = mockRequest.getRequestURI().substring("/users/".length());
+        Mockito.verify(mockRequest).setAttribute("user", fakeUser2);
+
+        List<Conversation> fakeConversationList = new ArrayList<>();
+        List<UUID> testParticipants = new ArrayList<>();
+        testParticipants.add(fakeUser.getId());
+        fakeConversationList.add(
+                new Conversation(UUID.randomUUID(), fakeUser.getId(), "test_conversation_private", Instant.now(), true, testParticipants));
+        fakeConversationList.add(
+                new Conversation(UUID.randomUUID(), UUID.randomUUID(), "test_conversation_public", Instant.now(), false, null));
+        Mockito.when(mockConversationStore.getAvailableConversations(fakeUser)).thenReturn(fakeConversationList);
+        Mockito.verify(mockRequest).setAttribute("conversations", fakeConversationList);
         Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
+        */
     }
 
 

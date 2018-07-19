@@ -32,8 +32,8 @@
     String username = (String)request.getSession().getAttribute("user");
     User user = UserStore.getInstance().getUser(username);
     String bio = user.getBio();
-    if(request.getAttribute("user").equals(username)){
 
+    if(request.getAttribute("user").equals(username)){
     %>
         <h3>About <%= username %>:</h3>
          <%
@@ -51,27 +51,46 @@
                <br/>
                <button type="submit">Submit</button>
             </form>
-        <h3>Your conversations:</h3>
-    <% }
 
+            <h3>Your conversations:</h3>
 
-
-
-         else{ %>
-             <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
-             <h3>About <%= request.getAttribute("user") %>:</h3>
-             <%
-             username = (String)request.getAttribute("user");
-             user = UserStore.getInstance().getUser(username);
-             bio = user.getBio();
-             if(bio != null) { %>
-             <p><%= bio %></p> <%
-              }
-              else{
-              %> <p>User has not added a bio.</p> <%
+            <%
+            List<Conversation> conversations = (List<Conversation>)request.getAttribute("conversations");
+            if(conversations == null || conversations.isEmpty()){
+                %>
+                 <p>You are not part of any conversations.</p>
+                 <%
+            }
+            else{
+                for(Conversation conversation : conversations){
+                    %>
+                    <li><a href="/chat/<%= conversation.getTitle() %>">
+                    <%= conversation.getTitle() %></a></li>
+                    <%
                 }
             }
-         %>
+
+    }
+
+
+    else{ %>
+      <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
+      <h3>About <%= request.getAttribute("user") %>:</h3>
+          <%
+          username = (String)request.getAttribute("user");
+          user = UserStore.getInstance().getUser(username);
+          bio = user.getBio();
+          if(bio != null) { %>
+              <p><%= bio %></p> <%
+               }
+               else{
+               %> <p>User has not added a bio.</p>
+               <%}
+  }
+ %>
+
+
+
 
 </div>
 </body>

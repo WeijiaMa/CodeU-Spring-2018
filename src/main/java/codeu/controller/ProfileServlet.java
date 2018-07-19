@@ -60,13 +60,16 @@ public class ProfileServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        //List<Conversation> conversations = conversationStore.getAllConversations();
         String username = (String)request.getSession().getAttribute("user");
+        User myUser = null;
+        if (username != null){ myUser = userStore.getUser(username); }
+        List<Conversation> conversations = conversationStore.getMyConversations(myUser);
+        System.out.println(conversations);
         request.setAttribute("username", username);
         String requestUrl = request.getRequestURI();
         String user = requestUrl.substring("/users/".length());
         request.setAttribute("user", user);
-        //request.setAttribute("conversations", conversations);
+        request.setAttribute("conversations", conversations);
         request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
     }
 

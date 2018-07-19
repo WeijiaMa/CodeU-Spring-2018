@@ -20,6 +20,7 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletException;
@@ -73,8 +74,6 @@ public class ConversationServlet extends HttpServlet {
     User user = null;
     if (username != null){ user = userStore.getUser(username); }
     List<Conversation> conversations = conversationStore.getAvailableConversations(user);
-    //List<Conversation> conversations = conversationStore.getAllConversations();
-    //String username = (String)request.getSession().getAttribute("user");
     request.setAttribute("username", username);
     request.setAttribute("conversations", conversations);
     request.getRequestDispatcher("/WEB-INF/view/conversations.jsp").forward(request, response);
