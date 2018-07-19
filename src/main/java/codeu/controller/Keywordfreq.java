@@ -2,7 +2,6 @@ package codeu.controller;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import static stopWords.stopwrd;
 
 public class keywords {
   //method breaks string into string array and then filters out stop words.
