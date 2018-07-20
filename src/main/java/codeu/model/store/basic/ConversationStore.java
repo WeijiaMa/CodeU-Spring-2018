@@ -59,7 +59,7 @@ public class ConversationStore {
   /** The in-memory list of Conversations. */
   private List<Conversation> conversations;
 
-  /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
+  /** This class is a singleton, so its constructor is private. Call getInsance() instead. */
   private ConversationStore(PersistentStorageAgent persistentStorageAgent) {
     this.persistentStorageAgent = persistentStorageAgent;
     conversations = new ArrayList<>();
@@ -84,6 +84,30 @@ public class ConversationStore {
     }
     return availableConversations;
   }
+
+  /** Access the current set of conversations known to the user. */
+
+  public List<Conversation> getMyPublicConversations(User user) {
+    List<Conversation> availableConversations = new ArrayList<>();
+    for (Conversation conversation : conversations){
+      if (user != null && conversation.isAvailableTo(user.getId()) && !conversation.isPrivate()){
+        availableConversations.add(conversation);
+      }
+    }
+    return availableConversations;
+  }
+
+    public List<Conversation> getMyPrivateConversations(User user) {
+        List<Conversation> availableConversations = new ArrayList<>();
+        for (Conversation conversation : conversations){
+            if (user != null && conversation.isAvailableTo(user.getId()) && conversation.isPrivate()){
+                availableConversations.add(conversation);
+
+            }
+        }
+        return availableConversations;
+    }
+
 
   /** Add a new conversation to the current set of conversations known to the application. */
   public void addConversation(Conversation conversation) {

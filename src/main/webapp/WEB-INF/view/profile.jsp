@@ -32,8 +32,8 @@
     String username = (String)request.getSession().getAttribute("user");
     User user = UserStore.getInstance().getUser(username);
     String bio = user.getBio();
-    if(request.getAttribute("user").equals(username)){
 
+    if(request.getAttribute("user").equals(username)){
     %>
         <h3>About <%= username %>:</h3>
          <%
@@ -51,23 +51,57 @@
                <br/>
                <button type="submit">Submit</button>
             </form>
-        <h3>Your conversations:</h3>
-    <% }
-         else{ %>
-             <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
-             <h3>About <%= request.getAttribute("user") %>:</h3>
-             <%
-             username = (String)request.getAttribute("user");
-             user = UserStore.getInstance().getUser(username);
-             bio = user.getBio();
-             if(bio != null) { %>
-             <p><%= bio %></p> <%
-              }
-              else{
-              %> <p>User has not added a bio.</p> <%
-                }
+
+            <h3>Your public conversations:</h3>
+
+            <%
+            List<Conversation> publicConvo = (List<Conversation>)request.getAttribute("publicConvo");
+            if(publicConvo == null || publicConvo.isEmpty()){
+                %>
+                 <p>You are not part of any public conversations.</p>
+                 <%
             }
-         %>
+            else{
+                for(Conversation conversation : publicConvo){
+                    %>
+                    <li><a href="/chat/<%= conversation.getTitle() %>">
+                    <%= conversation.getTitle() %></a></li>
+                    <%
+                }
+            } %>
+
+            <h3>Your private conversations:</h3>
+
+             <%
+             List<Conversation> privateConvo = (List<Conversation>)request.getAttribute("privateConvo");
+             if(privateConvo == null || privateConvo.isEmpty()){
+                %> <p>You are not part of any private conversations.</p>
+             <% }
+             else{
+                for(Conversation conversation : privateConvo){
+                   %>
+                   <li><a href="/chat/<%= conversation.getTitle() %>">
+                   <%= conversation.getTitle() %></a></li>
+                   <%
+                   }
+             }
+
+    }
+    else{ %>
+      <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
+      <h3>About <%= request.getAttribute("user") %>:</h3>
+          <%
+          username = (String)request.getAttribute("user");
+          user = UserStore.getInstance().getUser(username);
+          bio = user.getBio();
+          if(bio != null) { %>
+              <p><%= bio %></p> <%
+               }
+               else{
+               %> <p>User has not added a bio.</p>
+               <%}
+  }
+ %>
 
 </div>
 </body>
