@@ -59,7 +59,7 @@ public class ConversationStore {
   /** The in-memory list of Conversations. */
   private List<Conversation> conversations;
 
-  /** This class is a singleton, so its constructor is private. Call getInsance() instead. */
+  /** This class is a singleton, so its constructor is private. Call getInstance() instead. */
   private ConversationStore(PersistentStorageAgent persistentStorageAgent) {
     this.persistentStorageAgent = persistentStorageAgent;
     conversations = new ArrayList<>();
