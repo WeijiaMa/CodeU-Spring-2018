@@ -92,7 +92,6 @@ public class ConversationStore {
     for (Conversation conversation : conversations){
       if (user != null && conversation.isAvailableTo(user.getId()) && !conversation.isPrivate()){
         availableConversations.add(conversation);
-          System.out.println(conversation.getParticipants());
       }
     }
     return availableConversations;

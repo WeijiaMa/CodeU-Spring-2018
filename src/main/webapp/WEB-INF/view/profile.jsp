@@ -87,8 +87,6 @@
              }
 
     }
-
-
     else{ %>
       <p>This is the profile page for: <%= request.getAttribute("user") %>!</p>
       <h3>About <%= request.getAttribute("user") %>:</h3>
@@ -104,9 +102,6 @@
                <%}
   }
  %>
-
-
-
 
 </div>
 </body>
