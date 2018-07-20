@@ -52,23 +52,39 @@
                <button type="submit">Submit</button>
             </form>
 
-            <h3>Your conversations:</h3>
+            <h3>Your public conversations:</h3>
 
             <%
-            List<Conversation> conversations = (List<Conversation>)request.getAttribute("conversations");
-            if(conversations == null || conversations.isEmpty()){
+            List<Conversation> publicConvo = (List<Conversation>)request.getAttribute("publicConvo");
+            if(publicConvo == null || publicConvo.isEmpty()){
                 %>
-                 <p>You are not part of any conversations.</p>
+                 <p>You are not part of any public conversations.</p>
                  <%
             }
             else{
-                for(Conversation conversation : conversations){
+                for(Conversation conversation : publicConvo){
                     %>
                     <li><a href="/chat/<%= conversation.getTitle() %>">
                     <%= conversation.getTitle() %></a></li>
                     <%
                 }
-            }
+            } %>
+
+            <h3>Your private conversations:</h3>
+
+             <%
+             List<Conversation> privateConvo = (List<Conversation>)request.getAttribute("privateConvo");
+             if(privateConvo == null || privateConvo.isEmpty()){
+                %> <p>You are not part of any private conversations.</p>
+             <% }
+             else{
+                for(Conversation conversation : privateConvo){
+                   %>
+                   <li><a href="/chat/<%= conversation.getTitle() %>">
+                   <%= conversation.getTitle() %></a></li>
+                   <%
+                   }
+             }
 
     }
 

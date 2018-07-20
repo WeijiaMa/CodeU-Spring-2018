@@ -87,16 +87,27 @@ public class ConversationStore {
 
   /** Access the current set of conversations known to the user. */
 
-  public List<Conversation> getMyConversations(User user) {
+  public List<Conversation> getMyPublicConversations(User user) {
     List<Conversation> availableConversations = new ArrayList<>();
     for (Conversation conversation : conversations){
-        System.out.println(conversation.getParticipants());
-      if (user != null && conversation.hasParticipant(user.getId())){
+      if (user != null && conversation.isAvailableTo(user.getId()) && !conversation.isPrivate()){
         availableConversations.add(conversation);
+          System.out.println(conversation.getParticipants());
       }
     }
     return availableConversations;
   }
+
+    public List<Conversation> getMyPrivateConversations(User user) {
+        List<Conversation> availableConversations = new ArrayList<>();
+        for (Conversation conversation : conversations){
+            if (user != null && conversation.isAvailableTo(user.getId()) && conversation.isPrivate()){
+                availableConversations.add(conversation);
+
+            }
+        }
+        return availableConversations;
+    }
 
 
   /** Add a new conversation to the current set of conversations known to the application. */
