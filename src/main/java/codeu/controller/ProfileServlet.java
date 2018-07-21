@@ -4,18 +4,23 @@ import javax.servlet.http.HttpServlet;
 
 import codeu.model.data.Conversation;
 import codeu.model.data.User;
+import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mindrot.jbcrypt.BCrypt;
-import codeu.controller.keywordfreq;
+//import codeu.controller.keywords;
 
-/** Servlet class responsible for the login page.
- * @author: Konce Quispe */
+/**
+ * Servlet class responsible for the login page.
+ *
+ * @author: Konce Quispe
+ */
 public class ProfileServlet extends HttpServlet {
 
     private UserStore userStore;
@@ -38,32 +43,49 @@ public class ProfileServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        String bf = "";
-        String user = requestUrl.substring("/users/".length());
-        int kwmatching = 0;
-        List<User> users = userStore.getAllUsers();
 
-        for (User usera: users) {
-            String bioa = usera.getBio();
-            int kwmatched = Keywordfreq.kwcmp(user.getbio(), Keywordfreq.str2kw(bioa));
-            if(kwmatched > kwmatching) {
-                bf = usera.getName();
+        String username = (String)request.getSession().getAttribute("user");
+        request.setAttribute("username", username);
+        String requestUrl = request.getRequestURI();
+        String user = requestUrl.substring("/users/".length());
+
+        //best friend logic
+        String bf = "no best friend yet";
+        int kwmatching = 0;
+        int kwmatched = 0;
+        List<User> users = userStore.getAllUsers();
+        User userobj = null;
+        userobj = userStore.getUser(username);
+        ArrayList<String> user_bio = keywords.str2kw(userobj.getBio());
+        for (User user1: users) {
+            ArrayList<String> usercomp_bio = keywords.str2kw(user1.getBio());
+            if (userobj.equals(user1)) {
+              continue;
+            }
+            kwmatched = keywords.kwcmp(user_bio, usercomp_bio);
+            if(kwmatched > kwmatching) {  //((usercomp_bio!=null)?(!usercomp_bio.equals(user_bio)):false)
+                kwmatching = kwmatched;
+                bf = user1.getName();
             }
         }
-
+        request.setAttribute("test1", Integer.toString(kwmatching));
         request.setAttribute("bf", bf);
-        String requestUrl = request.getRequestURI();
         request.setAttribute("user", user);
         request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
     }
 
     /**
-     * Currently does nothing. TODO: <MVP will utilize this when the user submits their bio through
-     * text box, and the information will be stored in the model/store/basic directory so their bio
-     * can appear on their profile page.>
+     * Gets the username from the session and finds the corresponding user in the UserStore.
+     * Accesses the current bio for this user and updates it with the information from the submission
+     * form. Updates the user and redirects back to the user's profile page.
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        response.sendRedirect("/users");
+        String username = (String) request.getSession().getAttribute("user");
+        User user = UserStore.getInstance().getUser(username);
+        String newBio = request.getParameter("bio");
+        user.setBio(newBio);
+        UserStore.getInstance().updateUser(user);
+        response.sendRedirect("/users/" + username);
     }
 }

@@ -35,7 +35,7 @@
     String username = (String)request.getSession().getAttribute("user");
     User user = UserStore.getInstance().getUser(username);
     String bio = user.getBio();
-    String bf = (String)request.getSession().getAttribute("bf");
+    String bf = (String)request.getAttribute("bf");
     if(request.getAttribute("user").equals(username)){
 
     %>

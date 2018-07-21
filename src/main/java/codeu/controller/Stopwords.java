@@ -7,7 +7,6 @@ public class StopWords {
   public static ArrayList<String> getList() {
     //alphabetical arraylist of hobbies occupations and foods to sort for keywords
       ArrayList<String> list = new ArrayList<String>();
-      list.add("a");
       list.add("3D");
       list.add("Abandoned");
       list.add("Abused");
