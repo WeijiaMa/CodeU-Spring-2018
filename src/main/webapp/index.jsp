@@ -45,7 +45,9 @@
             create or join a conversation.</li>
         <li>View the <a href="/about.jsp">about</a> page to learn more about the
             project.</li>
+        <li><a href="#" onClick="MyWindow=window.open('https://docs.google.com/document/d/1rD5sYyq-l0DmiCDE2N2qZDszSrH_3KW0Ob8hlpntFGc/edit?usp=sharing','MyWindow',width=300,height=200); return false;">Check out our recommended user stories</a></li>
       </ul>
+
     </div>
   </div>
 </body>
