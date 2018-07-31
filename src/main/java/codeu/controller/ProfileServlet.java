@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mindrot.jbcrypt.BCrypt;
-//import codeu.controller.keywords;
 
 /**
  * Servlet class responsible for the login page.
@@ -23,7 +22,12 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public class ProfileServlet extends HttpServlet {
 
+    /** Store class that gives access to Users. */
     private UserStore userStore;
+
+    /** Store class that gives access to Conversations. */
+    private ConversationStore conversationStore;
+
     /**
      * Set up state for handling profile-related requests. This method is only called when
      * running in a server, not when running in a test.
@@ -32,11 +36,25 @@ public class ProfileServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         setUserStore(UserStore.getInstance());
+        setConversationStore(ConversationStore.getInstance());
     }
 
+    /**
+     * Sets the UserStore used by this servlet. This function provides a common setup method for use
+     * by the test framework or the servlet's init() function.
+     */
     void setUserStore(UserStore userStore) {
-      this.userStore = userStore;
+        this.userStore = userStore;
     }
+    /**
+     * Sets the ConversationStore used by this servlet. This function provides a common setup method
+     * for use by the test framework or the servlet's init() function.
+     */
+    void setConversationStore(ConversationStore conversationStore) {
+        this.conversationStore = conversationStore;
+    }
+
+
     /**
      * This function fires when a user requests the /users/ URL. It gets the user from the
      * URL and forwards the request to profile.jsp.
@@ -45,6 +63,10 @@ public class ProfileServlet extends HttpServlet {
             throws IOException, ServletException {
 
         String username = (String)request.getSession().getAttribute("user");
+        User myUser = null;
+        if (username != null){ myUser = userStore.getUser(username); }
+        List<Conversation> publicConversations = conversationStore.getMyPublicConversations(myUser);
+        List<Conversation> privateConversations = conversationStore.getMyPrivateConversations(myUser);
         request.setAttribute("username", username);
         String requestUrl = request.getRequestURI();
         String user = requestUrl.substring("/users/".length());
@@ -54,15 +76,14 @@ public class ProfileServlet extends HttpServlet {
         int kwmatching = 0;
         int kwmatched = 0;
         List<User> users = userStore.getAllUsers();
-        User userobj = null;
-        userobj = userStore.getUser(username);
-        ArrayList<String> user_bio = keywords.str2kw(userobj.getBio());
+        User userobj = userStore.getUser(username);
+        ArrayList<String> user_bio = Keywords.str2kw(userobj.getBio());
         for (User user1: users) {
-            ArrayList<String> usercomp_bio = keywords.str2kw(user1.getBio());
-            if (userobj.equals(user1)) {
+            ArrayList<String> usercomp_bio = Keywords.str2kw(user1.getBio());
+            if (userobj.getId() ==user1.getId()) {
               continue;
             }
-            kwmatched = keywords.kwcmp(user_bio, usercomp_bio);
+            kwmatched = Keywords.kwcmp(user_bio, usercomp_bio);
             if(kwmatched > kwmatching) {  //((usercomp_bio!=null)?(!usercomp_bio.equals(user_bio)):false)
                 kwmatching = kwmatched;
                 bf = user1.getName();
@@ -71,6 +92,8 @@ public class ProfileServlet extends HttpServlet {
         request.setAttribute("test1", Integer.toString(kwmatching));
         request.setAttribute("bf", bf);
         request.setAttribute("user", user);
+        request.setAttribute("publicConvo", publicConversations);
+        request.setAttribute("privateConvo", privateConversations);
         request.getRequestDispatcher("/WEB-INF/view/profile.jsp").forward(request, response);
     }
 

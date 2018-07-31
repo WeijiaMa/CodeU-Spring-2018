@@ -2,13 +2,14 @@ package codeu.controller;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
 
-public class keywords {
+public class Keywords {
   //method breaks string into string array and then filters out stop words.
   public static ArrayList<String> str2kw(String bio) {
       String[] arr = bio.split("[^a-zA-Z]+");
       StopWords stop  = new StopWords();
-      ArrayList<String> stopwords = stop.getList();
+      HashSet<String> stopwords = stop.getList();
       ArrayList<String> keywords = new ArrayList<String>();
 
       for (int i = 0; i < arr.length; i++) {
