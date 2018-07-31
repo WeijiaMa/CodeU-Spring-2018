@@ -21,6 +21,9 @@
     <% } %>
     <a href="/allusers">All Users</a>
     <a href="/about.jsp">About</a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+       <a href="/logout">Logout</a>
+      <% } %>
   </nav>
 
   <div id="container">
