@@ -48,7 +48,7 @@ public class ProfileServletTest {
         Mockito.when(mockRequest.getRequestDispatcher("/WEB-INF/view/profile.jsp"))
                 .thenReturn(mockRequestDispatcher);
     }
-
+/*
     @Test
     public void testDoGet() throws IOException, ServletException {
         /*
@@ -75,8 +75,8 @@ public class ProfileServletTest {
         Mockito.when(mockConversationStore.getAvailableConversations(fakeUser)).thenReturn(fakeConversationList);
         Mockito.verify(mockRequest).setAttribute("conversations", fakeConversationList);
         Mockito.verify(mockRequestDispatcher).forward(mockRequest, mockResponse);
-        */
-    }
 
+    }
+*/
 
 }

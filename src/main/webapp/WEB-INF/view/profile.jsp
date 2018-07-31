@@ -21,6 +21,9 @@
     <% } %>
     <a href="/allusers">All Users</a>
     <a href="/about.jsp">About</a>
+    <% if(request.getSession().getAttribute("user") != null){ %>
+       <a href="/logout">Logout</a>
+      <% } %>
   </nav>
 
   <div id="container">
@@ -32,6 +35,7 @@
     String username = (String)request.getSession().getAttribute("user");
     User user = UserStore.getInstance().getUser(username);
     String bio = user.getBio();
+    String bf = (String)request.getAttribute("bf");
 
     if(request.getAttribute("user").equals(username)){
     %>
@@ -39,6 +43,7 @@
          <%
             if(bio != null) { %>
               <p><%= bio %></p>
+              <p>Your best friend is: <%= bf %> </p>
              <% }
             else{ %>
               <p>You have not added a bio.</p> <%

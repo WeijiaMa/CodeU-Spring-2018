@@ -8,10 +8,12 @@ import codeu.model.store.basic.ConversationStore;
 import codeu.model.store.basic.UserStore;
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Servlet class responsible for the login page.
@@ -44,7 +46,6 @@ public class ProfileServlet extends HttpServlet {
     void setUserStore(UserStore userStore) {
         this.userStore = userStore;
     }
-
     /**
      * Sets the ConversationStore used by this servlet. This function provides a common setup method
      * for use by the test framework or the servlet's init() function.
@@ -60,6 +61,7 @@ public class ProfileServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
         String username = (String)request.getSession().getAttribute("user");
         User myUser = null;
         if (username != null){ myUser = userStore.getUser(username); }
@@ -68,6 +70,27 @@ public class ProfileServlet extends HttpServlet {
         request.setAttribute("username", username);
         String requestUrl = request.getRequestURI();
         String user = requestUrl.substring("/users/".length());
+
+        //best friend logic
+        String bf = "no best friend yet";
+        int kwmatching = 0;
+        int kwmatched = 0;
+        List<User> users = userStore.getAllUsers();
+        User userobj = userStore.getUser(username);
+        ArrayList<String> user_bio = Keywords.str2kw(userobj.getBio());
+        for (User user1: users) {
+            ArrayList<String> usercomp_bio = Keywords.str2kw(user1.getBio());
+            if (userobj.getId() ==user1.getId()) {
+              continue;
+            }
+            kwmatched = Keywords.kwcmp(user_bio, usercomp_bio);
+            if(kwmatched > kwmatching) {  //((usercomp_bio!=null)?(!usercomp_bio.equals(user_bio)):false)
+                kwmatching = kwmatched;
+                bf = user1.getName();
+            }
+        }
+        request.setAttribute("test1", Integer.toString(kwmatching));
+        request.setAttribute("bf", bf);
         request.setAttribute("user", user);
         request.setAttribute("publicConvo", publicConversations);
         request.setAttribute("privateConvo", privateConversations);
